@@ -1,112 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    tools:context=".MainActivity"
+    android:background="@drawable/back">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ListView
-            android:id="@+id/listView1"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/music_list"
+            android:layout_width="103dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:text="歌单"
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="269dp"
             android:layout_height="match_parent"
-            android:layout_below="@+id/btn_test"
-            android:layout_marginTop="20dp"
-            android:entries="@array/major_array" />
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="我的音乐"
+            android:textColor="#262626"
+            android:textSize="25dp" />
+
+        <Button
+            android:id="@+id/help"
+            android:text=""
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:background="#00000000"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/title"
+        android:text="播放列表"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ListView
+        android:id="@+id/playing"
+        android:layout_width="match_parent"
+        android:layout_height="552dp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/music_playing"
+        android:text="正在播放"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/now_playing"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/start_time"
+            android:text="00:00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <SeekBar
+            android:id="@+id/seek_bar"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/end_time"
+            android:text="00:00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="bottom"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/music_last"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:background="#00000000"
+            android:src="@android:drawable/ic_media_previous" />
 
-            <TextView
-                android:id="@+id/music_current_time"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="00:00"
-                android:textStyle="bold"
-                tools:autoText="false" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4" />
-
-            <TextView
-                android:id="@+id/music_total_time"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="00:00"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/music_pause"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:background="#00000000"
+            android:elevation="13dp"
+            android:src="@android:drawable/ic_media_pause" />
 
-            <SeekBar
-                android:id="@+id/music_seekbar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/music_next"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/previous"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00000000"
-                android:src="@android:drawable/ic_media_previous" />
-
-            <ImageButton
-                android:id="@+id/btn_pause"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00000000"
-                android:elevation="13dp"
-                android:src="@android:drawable/ic_media_pause" />
-
-            <ImageButton
-                android:id="@+id/next"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00000000"
-                android:src="@android:drawable/ic_media_next" />
-
-        </LinearLayout>
-
+            android:background="#00000000"
+            android:src="@android:drawable/ic_media_next" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+
+
+        <Button
+            android:id="@+id/music_loop2"
+            android:text="循环播放"
+            android:background="#00000000"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <Button
+            android:id="@+id/music_loop1"
+            android:text="单曲循环"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+
 </LinearLayout>
