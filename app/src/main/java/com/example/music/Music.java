@@ -2,7 +2,7 @@ package com.example.music;
 
 import java.io.Serializable;
 
-public class Music implements Serializable {
+public class Music implements Serializable{
 
     public int id;
     public int isCollect;
@@ -16,6 +16,14 @@ public class Music implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIsCollect() {
+        return isCollect;
+    }
+
+    public void setIsCollect(int isCollect) {
+        this.isCollect = isCollect;
     }
 
     public int getIsPlaying() {
@@ -61,6 +69,7 @@ public class Music implements Serializable {
     public String toString() {
         return "Music{" +
                 "id=" + id +
+                ", isCollect=" + isCollect +
                 ", isPlaying=" + isPlaying +
                 ", singer='" + singer + '\'' +
                 ", songName='" + songName + '\'' +

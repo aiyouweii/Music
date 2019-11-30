@@ -1,5 +1,6 @@
 package com.example.music;
 
+
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -10,11 +11,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,12 +55,12 @@ public class TotalMusicListActivity extends AppCompatActivity {
                 TotalMusicListActivity.mediaPlayer.reset();
                 AssetManager assetManager = getAssets();
                 try {
-                    AssetFileDescriptor assetFileDescriptor = assetManager.openFd("songs" + musicPlaying.getSinger() + " - " + musicPlaying.getSongName());
+                    AssetFileDescriptor assetFileDescriptor = assetManager.openFd("songs/" + musicPlaying.getSinger() + " - " + musicPlaying.getSongName());
                     TotalMusicListActivity.mediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
                     TotalMusicListActivity.mediaPlayer.prepare();
                     TotalMusicListActivity.mediaPlayer.start();
                     musicPlaying.setIsPlaying(1);
-                    updatePlayingStat(musicPlaying);
+                    updatePlayingStat(musicPlaying );
                     Log.d(TAG, "onItemClick: " + "start");
                 } catch (IOException e) {
                     e.printStackTrace();

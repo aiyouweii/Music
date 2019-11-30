@@ -6,9 +6,9 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -25,11 +25,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
 
     public static int collect_flag = 0;
     public static int isMain = 0;
@@ -59,12 +62,25 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case 3:
+                    if (seekBar.getProgress() != CollectActivity.mediaPlayer.getCurrentPosition() * 100 / CollectActivity.mediaPlayer.getDuration()){
+                        //                       Log.d(TAG, "handleMessage: " + CollectActivity.mediaPlayer.getCurrentPosition() * 100 / CollectActivity.mediaPlayer.getDuration());
+                        seekBar.setProgress(CollectActivity.mediaPlayer.getCurrentPosition() * 100 / CollectActivity.mediaPlayer.getDuration());
+                    }
+                    break;
+                case 4:
+                    startTime = findViewById(R.id.start_time);
+                    if(startTime.getText().toString().trim()!=CollectActivity.mediaPlayer.getCurrentPosition()/1000/60+":"+CollectActivity.mediaPlayer.getCurrentPosition()/1000%60) {
+                        //                       Log.d(TAG, "handleMessage: " + CollectActivity.mediaPlayer.getCurrentPosition() / 1000 / 60 + ":" + CollectActivity.mediaPlayer.getCurrentPosition() / 1000 % 60);
+                        startTime.setText(CollectActivity.mediaPlayer.getCurrentPosition() / 1000 / 60 + ":" + CollectActivity.mediaPlayer.getCurrentPosition() / 1000 % 60);
+                    }
+                    break;
+                case 5:
                     if (seekBar.getProgress() != mediaPlayer.getCurrentPosition() * 100 / mediaPlayer.getDuration()){
                         //                       Log.d(TAG, "handleMessage: " + mediaPlayer.getCurrentPosition() * 100 / mediaPlayer.getDuration());
                         seekBar.setProgress(mediaPlayer.getCurrentPosition() * 100 / mediaPlayer.getDuration());
                     }
                     break;
-                case 4:
+                case 6:
                     startTime = findViewById(R.id.start_time);
                     if(startTime.getText().toString().trim()!=mediaPlayer.getCurrentPosition()/1000/60+":"+mediaPlayer.getCurrentPosition()/1000%60) {
                         //                       Log.d(TAG, "handleMessage: " + mediaPlayer.getCurrentPosition() / 1000 / 60 + ":" + mediaPlayer.getCurrentPosition() / 1000 % 60);
@@ -99,20 +115,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        /*ImageButton music_stop = findViewById(R.id.music_stop);
-        music_stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TotalMusicListActivity.mediaPlayer.stop();
-                mediaPlayer.stop();
-                TextView startTime = findViewById(R.id.start_time);
-                startTime.setText("00:00");
-                seekBar.setProgress(0);
-                TextView music_playing = findViewById(R.id.now_playing);
-                music_playing.setText("");
-            }
-        });*/
-
         final ImageButton music_pause = findViewById(R.id.music_pause);
         music_pause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +130,17 @@ public class MainActivity extends AppCompatActivity {
                         thread.start();
                     }
                 }
-
+                else if(collect_flag == 1 && isMain == 0) {
+                    if (CollectActivity.mediaPlayer.isPlaying()) {
+                        music_pause.setImageResource(android.R.drawable.ic_media_play);
+                        CollectActivity.mediaPlayer.pause();
+                    } else {
+                        music_pause.setImageResource(android.R.drawable.ic_media_pause);
+                        CollectActivity.mediaPlayer.start();
+                        thread = new Thread(new SeekBarThread());
+                        thread.start();
+                    }
+                }
                 else{
                     if (mediaPlayer.isPlaying()) {
                         music_pause.setImageResource(android.R.drawable.ic_media_play);
@@ -157,6 +169,15 @@ public class MainActivity extends AppCompatActivity {
                         TotalMusicListActivity.mediaPlayer.setLooping(true);
                     }
                 }
+                else if(collect_flag == 1 && isMain == 0){
+                    if (CollectActivity.mediaPlayer.isLooping()) {
+                        Toast.makeText(MainActivity.this, "取消单曲循环", Toast.LENGTH_SHORT).show();
+                        CollectActivity.mediaPlayer.setLooping(false);
+                    } else {
+                        Toast.makeText(MainActivity.this, "单曲循环", Toast.LENGTH_SHORT).show();
+                        CollectActivity.mediaPlayer.setLooping(true);
+                    }
+                }
                 else{
                     if (mediaPlayer.isLooping()) {
                         Toast.makeText(MainActivity.this, "取消单曲循环", Toast.LENGTH_SHORT).show();
@@ -179,6 +200,11 @@ public class MainActivity extends AppCompatActivity {
                         TotalMusicListActivity.mediaPlayer.seekTo((int) (seekBar.getProgress() / 100.0 * TotalMusicListActivity.mediaPlayer.getDuration()));
                         TotalMusicListActivity.mediaPlayer.start();
                     }
+                    else if(collect_flag == 1 && isMain == 0){
+//                        Log.d(TAG, "onStopTrackingTouch: " + (int) (seekBar.getProgress() / 100.0 * CollectActivity.mediaPlayer.getDuration()));
+                        CollectActivity.mediaPlayer.seekTo((int) (seekBar.getProgress() / 100.0 * CollectActivity.mediaPlayer.getDuration()));
+                        CollectActivity.mediaPlayer.start();
+                    }
                     else{
                         mediaPlayer.seekTo((int) (seekBar.getProgress() / 100.0 * mediaPlayer.getDuration()));
                         mediaPlayer.start();
@@ -199,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
         ImageButton music_last = findViewById(R.id.music_last);
         music_last.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                 for(int i=0;i<playingList.size();i++){
                     if(playingList.get(i).getId() == musicPlaying.getId()){
                         TotalMusicListActivity.mediaPlayer.stop();
-
+                        CollectActivity.mediaPlayer.stop();
                         Log.d(TAG, "onClick: "+i);
                         if((i-1)!=-1) {
                             musicPlaying = playingList.get(i - 1);
@@ -219,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
                         AssetManager assetManager = getAssets();
                         try {
                             TotalMusicListActivity.mediaPlayer.stop();
+                            CollectActivity.mediaPlayer.stop();
                             AssetFileDescriptor assetFileDescriptor = assetManager.openFd("songs/" + musicPlaying.getSinger() + " - " + musicPlaying.getSongName());
                             mediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
                             mediaPlayer.prepare();
@@ -247,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
                 for(int i=0;i<playingList.size();i++){
                     if(playingList.get(i).getId() == musicPlaying.getId()){
                         TotalMusicListActivity.mediaPlayer.stop();
+                        CollectActivity.mediaPlayer.stop();
                         Log.d(TAG, "onClick: "+i);
                         if((i+1)!=playingList.size()) {
                             musicPlaying = playingList.get(i + 1);
@@ -259,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
                         AssetManager assetManager = getAssets();
                         try {
                             TotalMusicListActivity.mediaPlayer.stop();
+                            CollectActivity.mediaPlayer.stop();
                             AssetFileDescriptor assetFileDescriptor = assetManager.openFd("songs/" + musicPlaying.getSinger() + " - " + musicPlaying.getSongName());
                             mediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
                             mediaPlayer.prepare();
@@ -297,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
                             AssetManager assetManager = getAssets();
                             try {
                                 TotalMusicListActivity.mediaPlayer.stop();
+                                CollectActivity.mediaPlayer.stop();
                                 AssetFileDescriptor assetFileDescriptor = assetManager.openFd("songs/" + musicPlaying.getSinger() + " - " + musicPlaying.getSongName());
                                 mediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
                                 mediaPlayer.prepare();
@@ -344,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == 0 & resultCode == 0){
             musicPlaying = (Music) data.getSerializableExtra("music");
             TextView music_playing = findViewById(R.id.now_playing);
-            if(TotalMusicListActivity.mediaPlayer.isPlaying()) {
+            if(TotalMusicListActivity.mediaPlayer.isPlaying() || CollectActivity.mediaPlayer.isPlaying()) {
                 music_playing.setText(musicPlaying.getSinger() + " - " + musicPlaying.getSongName());
                 //Log.d(TAG, "onActivityResult: " + musicPlaying.toString());
             }
@@ -365,6 +396,7 @@ public class MainActivity extends AppCompatActivity {
                 AssetManager assetManager = getAssets();
                 try {
                     TotalMusicListActivity.mediaPlayer.stop();
+                    CollectActivity.mediaPlayer.stop();
                     AssetFileDescriptor assetFileDescriptor = assetManager.openFd("songs/" + musicPlaying.getSinger() + " - " + musicPlaying.getSongName());
                     mediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
                     mediaPlayer.prepare();
@@ -462,6 +494,13 @@ public class MainActivity extends AppCompatActivity {
             thread = new Thread(new SeekBarThread());
             thread.start();
         }
+        else if(CollectActivity.mediaPlayer.isPlaying() && collect_flag ==1){
+            TextView end_time = findViewById(R.id.end_time);
+            end_time.setText(CollectActivity.mediaPlayer.getDuration()/1000/60+":"+CollectActivity.mediaPlayer.getDuration()/1000%60);
+            Log.d(TAG, "onResume: "+CollectActivity.mediaPlayer.getDuration());
+            thread = new Thread(new SeekBarThread());
+            thread.start();
+        }
     }
 
     public void refreshMusicList(){
@@ -489,6 +528,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+//        Log.d(TAG, "onOptionsMenuClosed: ");
+        Intent intent = new Intent(MainActivity.this,CollectActivity.class);
+        startActivityForResult(intent,0);
+        return true;
+    }
+
+    @Override
     protected void onDestroy() {
         SQLiteDatabase db = musicDBHelper.getWritableDatabase();
         String sql = "update music set isPlaying=0 ";
@@ -514,6 +561,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            while (CollectActivity.mediaPlayer != null && CollectActivity.mediaPlayer.isPlaying() && collect_flag == 1) {
+                Message message1 = new Message();
+                message1.what = 3;
+                handler.sendMessage(message1);
+                Message message2 = new Message();
+                message2.what = 4;
+                handler.sendMessage(message2);
+                try {
+                    Thread.sleep(80);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
             while (mediaPlayer != null && mediaPlayer.isPlaying() && isMain == 1) {
                 Message message1 = new Message();
