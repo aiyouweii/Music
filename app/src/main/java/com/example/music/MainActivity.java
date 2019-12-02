@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler = new Handler(){
         public void handleMessage(Message msg){
             switch (msg.what) {
-                case 1:
+                case 1:                                                      //mediaPlayer.getCurrentPosition获取当前播放位置
                     if (seekBar.getProgress() != TotalMusicListActivity.mediaPlayer.getCurrentPosition() * 100 / TotalMusicListActivity.mediaPlayer.getDuration()){
                         //                       Log.d(TAG, "handleMessage: " + TotalMusicListActivity.mediaPlayer.getCurrentPosition() * 100 / TotalMusicListActivity.mediaPlayer.getDuration());
                         seekBar.setProgress(TotalMusicListActivity.mediaPlayer.getCurrentPosition() * 100 / TotalMusicListActivity.mediaPlayer.getDuration());
@@ -555,7 +555,8 @@ public class MainActivity extends AppCompatActivity {
                 message2.what = 2;
                 handler.sendMessage(message2);
                 try {
-                    Thread.sleep(80);
+                    Thread.sleep(80);      //每80毫秒更新一次位置
+                     //播放进度
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
